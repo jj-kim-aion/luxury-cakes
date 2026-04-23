@@ -1,16 +1,20 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProductBySlug, getRelatedProducts, getAllProductSlugs } from '@/lib/db';
+import { getProductBySlug, getRelatedProducts } from '@/lib/db';
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
 import { ProductCard } from '@/components/products/ProductCard';
+import { CakePlate } from '@/components/visual/CakePlate';
+import { Spotlight } from '@/components/visual/Spotlight';
+import { Reveal } from '@/components/visual/Reveal';
 import { leadTimeLabel } from '@/lib/format';
 
 type Params = { slug: string };
 
-export function generateStaticParams(): Params[] {
-  return getAllProductSlugs().map((slug) => ({ slug }));
-}
+// Phase 1: stay on the server for every request so the header's
+// `useSearchParams()` (client-only) never triggers a prerender bailout.
+// Phase 2 can re-enable static generation after header refactor.
+export const dynamic = 'force-dynamic';
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const product = getProductBySlug(params.slug);
@@ -26,166 +30,232 @@ export default function ProductDetailPage({ params }: { params: Params }) {
   if (!product) notFound();
 
   const related = getRelatedProducts(product.slug, product.category, 3);
+  const tiers =
+    product.category === 'wedding' || product.category === 'bespoke' ? 3 : 2;
 
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="border-b border-[color:var(--rule)]">
-        <div className="container-luxe py-5 text-xs uppercase tracking-[0.22em] text-[color:var(--fg-muted)]">
-          <Link className="link-underline" href="/">Atelier</Link>
-          <span className="mx-2">/</span>
-          <Link className="link-underline" href="/shop">Shop</Link>
-          <span className="mx-2">/</span>
-          <Link className="link-underline" href={`/shop?category=${product.category}`}>
+      {/* ─── Breadcrumb ─────────────────────────────────── */}
+      <div className="border-b" style={{ borderColor: 'var(--border-hair)' }}>
+        <nav
+          aria-label="Breadcrumb"
+          className="container-luxe py-5 flex items-center gap-2 eyebrow overflow-x-auto no-scrollbar whitespace-nowrap"
+        >
+          <Link className="btn-link" href="/">Atelier</Link>
+          <span className="text-fg-muted" aria-hidden="true">·</span>
+          <Link className="btn-link" href="/shop">Shop</Link>
+          <span className="text-fg-muted" aria-hidden="true">·</span>
+          <Link
+            className="btn-link"
+            href={`/shop?category=${product.category}`}
+          >
             {product.category}
           </Link>
-          <span className="mx-2">/</span>
-          <span className="text-[color:var(--fg)]">{product.name}</span>
-        </div>
+          <span className="text-fg-muted" aria-hidden="true">·</span>
+          <span className="text-fg-primary" style={{ letterSpacing: '0.05em' }}>
+            {product.name}
+          </span>
+        </nav>
       </div>
 
-      {/* Product */}
-      <section>
-        <div className="container-luxe py-12 md:py-20 grid lg:grid-cols-12 gap-12 lg:gap-16">
-          {/* Image */}
-          <div className="lg:col-span-6">
-            <div
-              className="aspect-square flex items-center justify-center border border-[color:var(--rule)] relative overflow-hidden"
-              style={{
-                background: `linear-gradient(135deg, ${product.imageAccent}22 0%, ${product.imageAccent}55 100%)`,
-              }}
-            >
-              <div
-                className="text-[240px] leading-none animate-fade-in"
-                style={{ willChange: 'transform' }}
-                aria-hidden="true"
-              >
-                {product.imageEmoji}
-              </div>
-              <div className="absolute top-5 left-5 eyebrow bg-[color:var(--bg)] px-3 py-1.5">
-                № {String(product.id).padStart(3, '0')}
-              </div>
-            </div>
+      {/* ─── Product ─────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{ paddingBlock: 'clamp(3rem, 7vw, 6rem)' }}
+      >
+        {/* Spotlight framing the key info area — §8.2 applied at reduced intensity */}
+        <div
+          className="absolute inset-0 opacity-40 pointer-events-none"
+          aria-hidden="true"
+        >
+          <Spotlight />
+        </div>
 
-            {/* Secondary thumbs (emoji repeated as compositional plates) */}
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {[0, 1, 2].map((i) => (
+        <div className="container-luxe relative z-10 grid lg:grid-cols-12 gap-10 md:gap-16">
+          {/* Image column — 7/5 asymmetry */}
+          <div className="lg:col-span-7">
+            <Reveal>
+              <figure
+                className="relative rounded-xl overflow-hidden aspect-[4/5]"
+                style={{ boxShadow: 'var(--shadow-hero)' }}
+              >
+                <CakePlate accent={product.imageAccent} tiers={tiers} />
                 <div
-                  key={i}
-                  className="aspect-square flex items-center justify-center border border-[color:var(--rule)] text-5xl opacity-70"
+                  className="absolute top-5 left-5 eyebrow px-3 py-1.5 rounded-full"
                   style={{
-                    background: `linear-gradient(${45 + i * 40}deg, ${product.imageAccent}14 0%, ${product.imageAccent}33 100%)`,
+                    background: 'var(--bg-elevated)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: '1px solid var(--border-hair)',
+                    color: 'var(--fg-primary)',
                   }}
-                  aria-hidden="true"
                 >
-                  {product.imageEmoji}
+                  № {String(product.id).padStart(3, '0')}
                 </div>
-              ))}
-            </div>
+              </figure>
+            </Reveal>
+
+            {/* Plate thumbnails — compositional studies, grain texture */}
+            <Reveal delay={100}>
+              <div className="mt-4 grid grid-cols-3 gap-3 md:gap-4">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="aspect-square rounded-md overflow-hidden relative"
+                    style={{
+                      border: '1px solid var(--border-hair)',
+                      opacity: 0.85 - i * 0.05,
+                    }}
+                  >
+                    <CakePlate accent={product.imageAccent} tiers={(i + 1) as 1 | 2 | 3} />
+                  </div>
+                ))}
+              </div>
+            </Reveal>
           </div>
 
-          {/* Info */}
-          <div className="lg:col-span-6 flex flex-col">
-            <span className="eyebrow">{product.category}</span>
-            <h1 className="mt-4 font-display text-5xl md:text-6xl tracking-[-0.015em] leading-[1.02]">
-              {product.name}
-            </h1>
-            {product.tagline && (
-              <p className="mt-4 text-lg italic text-[color:var(--fg-muted)] leading-snug">
-                {product.tagline}
+          {/* Info column — 5 cols */}
+          <div className="lg:col-span-5 flex flex-col lg:sticky lg:top-28 self-start">
+            <Reveal>
+              <span className="eyebrow capitalize">{product.category}</span>
+              <h1 className="mt-4 font-display text-h1 font-medium leading-[1.02] tracking-tight">
+                {product.name}
+              </h1>
+              {product.tagline && (
+                <p className="mt-4 font-display italic text-xl md:text-2xl text-fg-muted leading-snug">
+                  {product.tagline}
+                </p>
+              )}
+
+              <div className="mt-8 flex items-baseline gap-6">
+                <span className="font-display text-5xl font-medium tabular-nums">
+                  {product.price}
+                </span>
+                <span className="eyebrow">{product.serves}</span>
+              </div>
+
+              <p className="mt-8 text-fg-secondary leading-relaxed text-[15px] md:text-base">
+                {product.description}
               </p>
-            )}
-
-            <div className="mt-8 flex items-baseline gap-6">
-              <span className="font-display text-4xl tabular-nums">{product.price}</span>
-              <span className="eyebrow">{product.serves}</span>
-            </div>
-
-            <p className="mt-8 text-[color:var(--fg-muted)] leading-relaxed text-base">
-              {product.description}
-            </p>
+            </Reveal>
 
             {/* Key facts */}
-            <dl className="mt-10 grid grid-cols-2 gap-5 border-t border-b border-[color:var(--rule)] py-6">
-              <div>
-                <dt className="eyebrow">Lead time</dt>
-                <dd className="mt-1 text-sm">{leadTimeLabel(product.leadTimeDays)}</dd>
-              </div>
-              <div>
-                <dt className="eyebrow">Finish</dt>
-                <dd className="mt-1 text-sm">Hand-finished</dd>
-              </div>
-              <div>
-                <dt className="eyebrow">Category</dt>
-                <dd className="mt-1 text-sm capitalize">{product.category}</dd>
-              </div>
-              <div>
-                <dt className="eyebrow">Service</dt>
-                <dd className="mt-1 text-sm">{product.serves}</dd>
-              </div>
-            </dl>
+            <Reveal delay={80}>
+              <dl
+                className="mt-10 grid grid-cols-2 gap-5 py-6 border-y"
+                style={{ borderColor: 'var(--border-hair)' }}
+              >
+                <div>
+                  <dt className="eyebrow">Lead time</dt>
+                  <dd className="mt-2 text-sm text-fg-primary">
+                    {leadTimeLabel(product.leadTimeDays)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="eyebrow">Finish</dt>
+                  <dd className="mt-2 text-sm text-fg-primary">Hand-finished</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow">Service</dt>
+                  <dd className="mt-2 text-sm text-fg-primary">{product.serves}</dd>
+                </div>
+                <div>
+                  <dt className="eyebrow">Signature</dt>
+                  <dd className="mt-2 text-sm text-fg-primary">
+                    Chef pâtissier
+                  </dd>
+                </div>
+              </dl>
+            </Reveal>
 
-            {/* Add to cart */}
-            <div className="mt-8">
-              <AddToCartButton
-                slug={product.slug}
-                name={product.name}
-                priceCents={product.priceCents}
-                imageEmoji={product.imageEmoji}
-                imageAccent={product.imageAccent}
-              />
-              <p className="mt-4 text-xs text-[color:var(--fg-muted)]">
-                Made to order. Checkout returns in Phase II — your cart persists on this device.
-              </p>
-            </div>
-
-            {/* Details — ingredients & allergens */}
-            <div className="mt-12 space-y-8">
-              <div>
-                <div className="eyebrow mb-4">Ingredients</div>
-                <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-[color:var(--fg-muted)]">
-                  {product.ingredients.map((i, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="mt-2 h-px w-3 bg-[color:var(--fg-muted)] opacity-50 flex-shrink-0" />
-                      <span>{i}</span>
-                    </li>
-                  ))}
-                </ul>
+            {/* CTA */}
+            <Reveal delay={140}>
+              <div className="mt-8">
+                <AddToCartButton
+                  slug={product.slug}
+                  name={product.name}
+                  priceCents={product.priceCents}
+                  imageEmoji={product.imageEmoji}
+                  imageAccent={product.imageAccent}
+                />
+                <p className="mt-4 text-xs text-fg-muted leading-relaxed max-w-sm">
+                  Made to order. Checkout returns in Phase II — your cart persists on this
+                  device so you can complete the reservation later.
+                </p>
               </div>
-              <div>
-                <div className="eyebrow mb-4">Allergens</div>
-                <div className="flex flex-wrap gap-2">
-                  {product.allergens.map((a) => (
-                    <span
-                      key={a}
-                      className="border border-[color:var(--rule)] px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-[color:var(--fg-muted)]"
-                    >
-                      {a}
-                    </span>
-                  ))}
+            </Reveal>
+
+            {/* Ingredients & allergens */}
+            <Reveal delay={180}>
+              <div className="mt-12 space-y-10">
+                <div>
+                  <div className="eyebrow mb-5">Ingredients</div>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 text-sm text-fg-secondary">
+                    {product.ingredients.map((i, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="mt-[0.55rem] h-px w-3 flex-shrink-0"
+                          style={{ background: 'var(--color-gold)' }}
+                        />
+                        <span>{i}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="eyebrow mb-5">Allergens</div>
+                  <div className="flex flex-wrap gap-2">
+                    {product.allergens.map((a) => (
+                      <span
+                        key={a}
+                        className="px-3 py-1.5 text-[11px] uppercase tracking-wider font-medium rounded-md"
+                        style={{
+                          background: 'var(--bg-surface)',
+                          color: 'var(--fg-secondary)',
+                          border: '1px solid var(--border-hair)',
+                        }}
+                      >
+                        {a}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* Related */}
+      {/* ─── Related ────────────────────────────────────── */}
       {related.length > 0 && (
-        <section className="border-t border-[color:var(--rule)] bg-[color:var(--bg-alt)]">
-          <div className="container-luxe py-20 md:py-28">
-            <div className="flex items-end justify-between mb-12">
+        <section
+          className="border-t"
+          style={{
+            borderColor: 'var(--border-hair)',
+            background: 'var(--bg-surface)',
+            paddingBlock: 'var(--section-y)',
+          }}
+        >
+          <div className="container-luxe">
+            <Reveal className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
                 <span className="eyebrow">You may also love</span>
-                <h2 className="mt-4 font-display text-3xl md:text-4xl">From the collection</h2>
+                <h2 className="mt-6 font-display text-h2 font-medium leading-tight tracking-tight">
+                  From the collection
+                </h2>
               </div>
-              <Link href="/shop" className="hidden md:inline-flex link-underline text-sm uppercase tracking-[0.22em]">
-                View all →
+              <Link href="/shop" className="btn-link">
+                View all
+                <span aria-hidden="true">→</span>
               </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
+            </Reveal>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {related.map((p, i) => (
+                <Reveal key={p.id} delay={i * 80}>
+                  <ProductCard product={p} />
+                </Reveal>
               ))}
             </div>
           </div>

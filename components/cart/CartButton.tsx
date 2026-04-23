@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ShoppingBag } from 'lucide-react';
 import { useCart } from '@/lib/store/cart';
 
 export function CartButton() {
@@ -13,18 +14,25 @@ export function CartButton() {
 
   return (
     <button
+      type="button"
       onClick={toggle}
-      aria-label={`Cart (${count} items)`}
-      className="relative h-9 px-4 border border-[color:var(--fg)] text-[11px] uppercase tracking-[0.22em]
-                 transition-all duration-300 hover:bg-[color:var(--fg)] hover:text-[color:var(--bg)]
-                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      aria-label={`Cart — ${count} ${count === 1 ? 'item' : 'items'}`}
+      className="relative inline-flex items-center gap-2 h-10 px-4 rounded-md border text-[11px] uppercase tracking-luxe
+                 transition-[background-color,color,border-color,transform] duration-base ease-out-soft
+                 hover:bg-ink hover:text-cream hover:border-ink hover:-translate-y-[1px]
+                 focus-visible:outline-none"
+      style={{ borderColor: 'var(--border-strong)', color: 'var(--fg-primary)' }}
     >
+      <ShoppingBag size={14} strokeWidth={1.5} aria-hidden="true" />
       <span className="hidden sm:inline">Cart</span>
-      <span className="sm:hidden">◇</span>
       {mounted && count > 0 && (
         <span
           aria-hidden="true"
-          className="ml-2 inline-block min-w-[20px] h-5 px-1 bg-[color:var(--accent)] text-[color:var(--bg)] text-[10px] leading-5 text-center"
+          className="inline-grid place-items-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] leading-none font-medium tabular-nums"
+          style={{
+            background: 'var(--color-gold)',
+            color: 'var(--color-ink)',
+          }}
         >
           {count}
         </span>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
@@ -19,27 +20,34 @@ export function ThemeToggle() {
     } catch {}
   }
 
-  // Avoid mismatch: render a stable placeholder until mounted.
+  // Stable SSR placeholder — no icon until mount to prevent mismatch.
   if (!theme) {
     return (
       <button
+        type="button"
         aria-label="Toggle theme"
-        className="h-9 w-9 border border-[color:var(--rule)] flex items-center justify-center text-xs"
+        className="h-10 w-10 grid place-items-center rounded-md border"
+        style={{ borderColor: 'var(--border-soft)' }}
       >
-        ◐
+        <span className="h-3 w-3 rounded-full bg-fg-muted opacity-40" aria-hidden="true" />
       </button>
     );
   }
 
+  const Icon = theme === 'dark' ? Sun : Moon;
+  const next = theme === 'dark' ? 'light' : 'dark';
+
   return (
     <button
+      type="button"
       onClick={toggle}
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className="h-9 w-9 border border-[color:var(--rule)] flex items-center justify-center text-sm
-                 transition-colors duration-300 hover:border-[color:var(--fg)]
-                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)]"
+      aria-label={`Switch to ${next} mode`}
+      className="h-10 w-10 grid place-items-center rounded-md border text-fg-primary
+                 transition-colors duration-base ease-out-soft hover:border-border-strong
+                 focus-visible:outline-none"
+      style={{ borderColor: 'var(--border-soft)' }}
     >
-      <span aria-hidden="true">{theme === 'dark' ? '☾' : '☀'}</span>
+      <Icon size={16} strokeWidth={1.5} aria-hidden="true" />
     </button>
   );
 }

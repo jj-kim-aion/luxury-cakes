@@ -15,17 +15,23 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <section className="container-luxe py-32 text-center">
+    <section
+      className="container-luxe text-center"
+      style={{ paddingBlock: 'clamp(6rem, 12vw, 10rem)' }}
+    >
       <span className="eyebrow">Oven trouble</span>
-      <h1 className="mt-6 font-display text-5xl md:text-6xl tracking-[-0.015em]">
-        Something <span className="italic text-[color:var(--fg-muted)]">burned.</span>
+      <h1 className="mt-6 font-display text-h1 font-medium leading-tight tracking-tight">
+        Something{' '}
+        <em className="italic text-fg-muted">burned.</em>
       </h1>
-      <p className="mt-6 text-[color:var(--fg-muted)] max-w-md mx-auto">
-        The page failed to render. You can try again, or step back into the atelier.
+      <p className="lead mt-8 mx-auto">
+        The page failed to render. Try again, or step back into the atelier.
       </p>
-      <div className="mt-10 flex justify-center gap-3">
-        <button onClick={reset} className="btn-primary">Try again</button>
-        <Link href="/" className="btn-ghost">Back to home</Link>
+      <div className="mt-10 flex justify-center gap-3 flex-wrap">
+        <button type="button" onClick={reset} className="btn-primary">
+          Try again
+        </button>
+        <Link href="/" className="btn-secondary">Back to home</Link>
       </div>
     </section>
   );

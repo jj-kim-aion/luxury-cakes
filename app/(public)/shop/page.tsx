@@ -25,7 +25,9 @@ function parseCategory(value?: string): ProductCategory | undefined {
 
 function parseSort(value?: string): 'price-asc' | 'price-desc' | 'name' | 'featured' | undefined {
   const valid = ['price-asc', 'price-desc', 'name', 'featured'];
-  return value && valid.includes(value) ? (value as 'price-asc' | 'price-desc' | 'name' | 'featured') : undefined;
+  return value && valid.includes(value)
+    ? (value as 'price-asc' | 'price-desc' | 'name' | 'featured')
+    : undefined;
 }
 
 export default function ShopPage({ searchParams }: { searchParams: SearchParams }) {
@@ -38,44 +40,77 @@ export default function ShopPage({ searchParams }: { searchParams: SearchParams 
 
   return (
     <>
-      {/* Header */}
-      <section className="border-b border-[color:var(--rule)]">
-        <div className="container-luxe pt-20 pb-14 md:pt-28 md:pb-20">
-          <span className="eyebrow">{categoryMeta ? categoryMeta.blurb : 'The full collection'}</span>
-          <h1 className="mt-4 font-display text-5xl md:text-7xl tracking-[-0.015em]">
+      {/* ─── Header ─────────────────────────────────────── */}
+      <section
+        className="relative border-b overflow-hidden"
+        style={{ borderColor: 'var(--border-hair)' }}
+      >
+        <div
+          className="container-luxe"
+          style={{
+            paddingTop: 'clamp(4rem, 8vw, 7rem)',
+            paddingBottom: 'clamp(3rem, 6vw, 5rem)',
+          }}
+        >
+          <span className="eyebrow">
+            {categoryMeta ? categoryMeta.blurb : 'The full collection'}
+          </span>
+          <h1 className="mt-6 font-display text-display font-medium leading-[1.02] tracking-tight max-w-4xl">
             {categoryMeta ? (
               <>
-                {categoryMeta.label} <span className="italic text-[color:var(--fg-muted)]">cakes.</span>
+                {categoryMeta.label}{' '}
+                <em className="italic text-fg-muted">cakes.</em>
               </>
             ) : (
               <>
-                Shop <span className="italic text-[color:var(--fg-muted)]">the collection.</span>
+                Shop{' '}
+                <em className="italic text-fg-muted">the collection.</em>
               </>
             )}
           </h1>
-          <p className="mt-6 max-w-2xl text-[color:var(--fg-muted)] leading-relaxed">
-            Every cake is made to order in our atelier. Lead times vary by composition — see
-            each piece for details. Collection or London delivery.
+          <p className="lead mt-8">
+            Every cake is made to order in our atelier. Lead times vary by composition —
+            see each piece for the detail. Collection or London delivery.
           </p>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="border-b border-[color:var(--rule)] bg-[color:var(--bg-alt)]">
-        <div className="container-luxe py-8">
-          <Suspense fallback={<div className="eyebrow animate-shimmer">Loading filters…</div>}>
+      {/* ─── Filters ────────────────────────────────────── */}
+      <section
+        className="border-b sticky top-[72px] md:top-[76px] z-20"
+        style={{
+          borderColor: 'var(--border-hair)',
+          background: 'var(--bg-elevated)',
+          backdropFilter: 'blur(18px) saturate(140%)',
+          WebkitBackdropFilter: 'blur(18px) saturate(140%)',
+        }}
+      >
+        <div className="container-luxe py-5">
+          <Suspense
+            fallback={<div className="eyebrow animate-shimmer">Loading filters…</div>}
+          >
             <ShopFilters />
           </Suspense>
         </div>
       </section>
 
-      {/* Grid */}
+      {/* ─── Grid ───────────────────────────────────────── */}
       <section>
-        <div className="container-luxe py-16 md:py-24">
+        <div
+          className="container-luxe"
+          style={{
+            paddingTop: 'clamp(3rem, 6vw, 5rem)',
+            paddingBottom: 'clamp(5rem, 10vw, 8rem)',
+          }}
+        >
           <div className="mb-10 flex items-baseline justify-between">
             <p className="eyebrow">
               {products.length} {products.length === 1 ? 'cake' : 'cakes'}
-              {search ? <span className="ml-2 normal-case tracking-normal text-[color:var(--fg-muted)]">for “{search}”</span> : null}
+              {search ? (
+                <span className="ml-3 normal-case tracking-normal text-fg-muted">
+                  for “{search}”
+                </span>
+              ) : null}
             </p>
           </div>
           <ProductGrid products={products} />

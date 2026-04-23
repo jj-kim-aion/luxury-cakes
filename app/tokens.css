@@ -1,0 +1,150 @@
+/* ──────────────────────────────────────────────────────────────────────
+   tokens.css — Maison Saveur
+   Single source of truth. Mirrors DESIGN.md §1–§6 exactly.
+   No component file may reference hex literals. Use var(--*) only.
+   ────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── §1.1 Color tokens — Warm patisserie palette ──────────────────── */
+  --color-ink:           #1A1413;
+  --color-ink-soft:      #3A2E2A;
+  --color-ink-muted:     #7A6A62;
+  --color-cream:         #FAF6F0;
+  --color-porcelain:     #F3ECE2;
+  --color-champagne:     #E8D9C4;
+  --color-rose:          #D4A5A5;
+  --color-rose-deep:     #B27A7A;
+  --color-gold:          #C9A96A;
+  --color-gold-deep:     #A8884E;
+  --color-cocoa:         #4A2E26;
+  --color-berry:         #6B2B3A;
+  --color-mint:          #C4D4C0;
+
+  /* ── §1.2 Semantic roles (light) ──────────────────────────────────── */
+  --bg-primary:          var(--color-cream);
+  --bg-surface:          var(--color-porcelain);
+  --bg-elevated:         rgba(255, 253, 250, 0.72);
+  --bg-inverse:          var(--color-cocoa);
+
+  --fg-primary:          var(--color-ink);
+  --fg-secondary:        var(--color-ink-soft);
+  --fg-muted:            var(--color-ink-muted);
+  --fg-on-dark:          var(--color-cream);
+
+  --brand:               var(--color-rose);
+  --brand-hover:         var(--color-rose-deep);
+  --accent:              var(--color-gold);
+  --accent-hover:        var(--color-gold-deep);
+
+  --border-hair:         rgba(26, 20, 19, 0.08);
+  --border-soft:         rgba(26, 20, 19, 0.14);
+  --border-strong:       rgba(26, 20, 19, 0.24);
+
+  --focus-ring:          rgba(201, 169, 106, 0.55);
+
+  /* ── §2 Typography ────────────────────────────────────────────────── */
+  --font-display:   'Cormorant Garamond', 'Cormorant', 'Playfair Display', Georgia, serif;
+  --font-body:      'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:      'JetBrains Mono', ui-monospace, monospace;
+
+  --text-display:   clamp(3.5rem, 8vw, 7.5rem);
+  --text-h1:        clamp(2.5rem, 5vw, 4.5rem);
+  --text-h2:        clamp(1.875rem, 3.2vw, 2.75rem);
+  --text-h3:        clamp(1.25rem, 1.8vw, 1.5rem);
+  --text-eyebrow:   0.75rem;
+  --text-lead:      clamp(1.125rem, 1.4vw, 1.375rem);
+  --text-body:      1rem;
+  --text-small:     0.875rem;
+  --text-micro:     0.75rem;
+  --text-price:     clamp(1.25rem, 1.6vw, 1.5rem);
+
+  /* ── §3 Spacing ───────────────────────────────────────────────────── */
+  --space-0:   0;
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.5rem;
+  --space-6:   2rem;
+  --space-7:   3rem;
+  --space-8:   4rem;
+  --space-9:   6rem;
+  --space-10:  8rem;
+  --space-11:  12rem;
+
+  --section-y:  clamp(5rem, 10vw, 10rem);
+  --section-x:  clamp(1.25rem, 5vw, 6rem);
+  --container-max: 1440px;
+
+  /* ── §4 Shadows / depth — cocoa-tinted ────────────────────────────── */
+  --shadow-hair:    0 1px 0 rgba(26, 20, 19, 0.06);
+  --shadow-soft:    0 4px 14px -6px rgba(74, 46, 38, 0.10),
+                    0 2px 4px -2px rgba(74, 46, 38, 0.06);
+  --shadow-card:    0 18px 40px -18px rgba(74, 46, 38, 0.18),
+                    0 4px 10px -4px rgba(74, 46, 38, 0.08);
+  --shadow-float:   0 32px 64px -24px rgba(74, 46, 38, 0.24),
+                    0 8px 20px -10px rgba(74, 46, 38, 0.12);
+  --shadow-hero:    0 60px 120px -40px rgba(74, 46, 38, 0.35);
+
+  --glass-blur:     blur(20px) saturate(140%);
+  --glass-border:   1px solid rgba(255, 253, 250, 0.35);
+  --glass-bg:       rgba(255, 253, 250, 0.55);
+  --glass-bg-dark:  rgba(26, 20, 19, 0.35);
+
+  /* ── §5 Radii ─────────────────────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   32px;
+  --radius-2xl:  48px;
+  --radius-full: 9999px;
+
+  /* ── §6.1 Motion ──────────────────────────────────────────────────── */
+  --ease-out-soft:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:     cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-liquid:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-overshoot:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-instant: 120ms;
+  --dur-fast:    200ms;
+  --dur-base:    300ms;
+  --dur-slow:    500ms;
+  --dur-liquid:  600ms;
+  --dur-hero:    900ms;
+
+  /* ── §12 Breakpoints (informational — matched in tailwind.config) ─── */
+  --bp-sm:  640px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+  --bp-2xl: 1536px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   Dark mode — preserve DESIGN.md warm identity. No black-on-white flip.
+   Cream surfaces invert to cocoa; rose/gold accents shift slightly warmer.
+   ────────────────────────────────────────────────────────────────────── */
+html.dark {
+  --bg-primary:     #14100E;
+  --bg-surface:     #1C1613;
+  --bg-elevated:    rgba(26, 20, 19, 0.55);
+  --bg-inverse:     var(--color-cream);
+
+  --fg-primary:     #F2E8D5;
+  --fg-secondary:   #D9C9B2;
+  --fg-muted:       #A89683;
+  --fg-on-dark:     #F2E8D5;
+
+  --border-hair:    rgba(242, 232, 213, 0.06);
+  --border-soft:    rgba(242, 232, 213, 0.12);
+  --border-strong:  rgba(242, 232, 213, 0.22);
+
+  --glass-bg:       rgba(26, 20, 19, 0.55);
+  --glass-border:   1px solid rgba(242, 232, 213, 0.10);
+
+  --brand:          #E0B8B8;
+  --brand-hover:    #C99999;
+  --accent:         #D9BB82;
+  --accent-hover:   #C9A96A;
+}
