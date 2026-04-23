@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllProducts, CATEGORIES } from '@/lib/db';
+import { getAllProducts, CATEGORIES } from '@/lib/mock-data';
 import { ProductCard } from '@/components/products/ProductCard';
 import { Aurora } from '@/components/visual/Aurora';
 import { Orbs } from '@/components/visual/Orbs';

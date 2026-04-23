@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getAllProducts, CATEGORIES, type ProductCategory } from '@/lib/db';
+import { getAllProducts, CATEGORIES } from '@/lib/mock-data';
+import type { ProductCategory } from '@/lib/mock-data';
 import { ProductGrid } from '@/components/products/ProductGrid';
 import { ShopFilters } from '@/components/products/ShopFilters';
 
@@ -19,7 +20,7 @@ type SearchParams = {
 };
 
 function parseCategory(value?: string): ProductCategory | undefined {
-  const valid: ProductCategory[] = ['signature', 'seasonal', 'wedding', 'bespoke'];
+  const valid = CATEGORIES.map(c => c.value);
   return value && (valid as string[]).includes(value) ? (value as ProductCategory) : undefined;
 }
 

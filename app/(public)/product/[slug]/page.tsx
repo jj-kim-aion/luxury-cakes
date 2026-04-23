@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProductBySlug, getRelatedProducts } from '@/lib/db';
+import { getProductBySlug, getRelatedProducts } from '@/lib/mock-data';
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
 import { ProductCard } from '@/components/products/ProductCard';
 import { CakePlate } from '@/components/visual/CakePlate';

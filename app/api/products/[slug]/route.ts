@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getProductBySlug, getRelatedProducts } from '@/lib/db';
+import { getProductBySlug, getRelatedProducts } from '@/lib/mock-data';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function GET(
   _req: Request,
@@ -15,12 +16,12 @@ export async function GET(
     const related = getRelatedProducts(product.slug, product.category, 3);
     return NextResponse.json(
       { product, related },
-      { headers: { 'Cache-Control': 'no-store' } },
+      { headers: { 'Cache-Control': 'public, max-age=3600' } },
     );
   } catch (err) {
     console.error(`GET /api/products/${params.slug} failed`, err);
     return NextResponse.json(
-      { error: 'Failed to load product' },
+      { error: 'Failed to load product', details: String(err) },
       { status: 500 },
     );
   }

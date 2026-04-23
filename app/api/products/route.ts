@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getAllProducts, type ProductCategory } from '@/lib/db';
+import { getAllProducts } from '@/lib/mock-data';
+
+type ProductCategory = 'signature' | 'seasonal' | 'wedding' | 'bespoke';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour
 
 const CATEGORIES: ProductCategory[] = ['signature', 'seasonal', 'wedding', 'bespoke'];
 const SORTS = ['price-asc', 'price-desc', 'name', 'featured'] as const;
@@ -23,11 +26,11 @@ export async function GET(req: Request) {
 
     const search = searchParams.get('q')?.trim() || undefined;
 
-    const products = getAllProducts({ category, search, sort });
+    const products = getAllProducts({ category: category, search, sort });
 
     return NextResponse.json(
       { count: products.length, products },
-      { headers: { 'Cache-Control': 'no-store' } },
+      { headers: { 'Cache-Control': 'public, max-age=3600' } },
     );
   } catch (err) {
     console.error('GET /api/products failed', err);
