@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────────────────────────────────────────────────────
+   Maison Saveur — global tokens
+   Warm cream + noir + champagne. Editorial typography.
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #fdfbf7;
+  --bg-alt: #f7efe1;
+  --fg: #221a14;
+  --fg-muted: #5b4a3c;
+  --rule: rgba(80, 50, 20, 0.12);
+  --accent: #8b2e3f;
+  --gold: #c9a66b;
+}
+
+html.dark {
+  --bg: #130f0b;
+  --bg-alt: #1d1710;
+  --fg: #f2e8d5;
+  --fg-muted: #bda98c;
+  --rule: rgba(220, 194, 147, 0.14);
+  --accent: #d9a4ad;
+  --gold: #e8c98f;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply uppercase text-[11px] tracking-[0.28em] text-[color:var(--fg-muted)];
+  }
+  .rule {
+    @apply h-px w-full;
+    background: var(--rule);
+  }
+  .container-luxe {
+    @apply mx-auto max-w-[1240px] px-6 md:px-10;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-none
+           border border-[color:var(--fg)] bg-[color:var(--fg)] text-[color:var(--bg)]
+           px-7 py-4 text-[11px] uppercase tracking-[0.24em]
+           transition-all duration-300 ease-out
+           hover:bg-transparent hover:text-[color:var(--fg)]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)];
+    will-change: transform, background-color;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-none
+           border border-[color:var(--fg)] bg-transparent text-[color:var(--fg)]
+           px-7 py-4 text-[11px] uppercase tracking-[0.24em]
+           transition-all duration-300 ease-out
+           hover:bg-[color:var(--fg)] hover:text-[color:var(--bg)]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)];
+  }
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-500 ease-out;
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+  }
+  .card-frame {
+    @apply border border-[color:var(--rule)] bg-[color:var(--bg-alt)]
+           transition-all duration-500 ease-out;
+  }
+  .card-frame:hover {
+    @apply shadow-luxe-sm;
+    border-color: var(--fg-muted);
+  }
+}
+
+/* Subtle paper grain overlay for luxury feel */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Scrollbar refinement */
+html {
+  scroll-behavior: smooth;
+}
+::selection {
+  background: var(--gold);
+  color: var(--fg);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
